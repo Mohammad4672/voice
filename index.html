@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruba Message</title>
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial;
+  text-align: center;
+  color: white;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+}
+
+/* START BUTTON */
+#startBtn {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px 25px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background: white;
+  color: black;
+  cursor: pointer;
+}
+
+/* STARS */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+}
+
+.star.far { width: 2px; height: 2px; opacity: 0.3; animation: moveFar linear infinite; }
+.star.mid { width: 3px; height: 3px; opacity: 0.6; animation: moveMid linear infinite; }
+.star.close { width: 4px; height: 4px; opacity: 1; animation: moveClose linear infinite; }
+
+@keyframes moveFar { from {transform: translateY(-10px);} to {transform: translateY(100vh);} }
+@keyframes moveMid { from {transform: translateY(-10px);} to {transform: translateY(100vh);} }
+@keyframes moveClose { from {transform: translateY(-10px);} to {transform: translateY(100vh);} }
+
+/* CINEMATIC TEXT */
+#loveText {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 70px;
+  font-weight: bold;
+  display: none;
+  color: #ff4d6d;
+  text-shadow: 0 0 10px #ff4d6d, 0 0 20px #ff4d6d, 0 0 40px #ff4d6d;
+  animation: glowPulse 1.5s infinite;
+}
+
+@keyframes glowPulse {
+  0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.6; }
+}
+
+/* GIFT BOX */
+#box {
+  display: none;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 100px;
+  cursor: pointer;
+}
+
+/* HEARTS */
+.heart {
+  position: absolute;
+  font-size: 25px;
+  animation: floatUp 3s linear forwards;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-400px); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<button id="startBtn">📩 Open Message</button>
+
+<!-- الصوت جاهز هون -->
+<audio id="audio" src="voice.mp3"></audio>
+
+<div id="loveText">Ruba ❤️</div>
+<div id="box">🎁</div>
+
+<script>
+const audio = document.getElementById("audio");
+const startBtn = document.getElementById("startBtn");
+const loveText = document.getElementById("loveText");
+const box = document.getElementById("box");
+
+let finished = false;
+
+/* stars */
+function createStars() {
+  for (let i = 0; i < 180; i++) {
+    let star = document.createElement("div");
+    star.classList.add("star");
+
+    let r = Math.random();
+
+    if (r < 0.33) star.classList.add("far");
+    else if (r < 0.66) star.classList.add("mid");
+    else star.classList.add("close");
+
+    star.style.left = Math.random() * window.innerWidth + "px";
+    star.style.top = Math.random() * window.innerHeight + "px";
+    star.style.animationDuration = (Math.random() * 10 + 5) + "s";
+
+    document.body.appendChild(star);
+  }
+}
+
+/* START */
+startBtn.onclick = async () => {
+  startBtn.style.display = "none";
+
+  createStars();
+
+  try {
+    audio.currentTime = 0;
+    await audio.play();
+  } catch (e) {
+    alert("اضغط مرة ثانية لتشغيل الصوت 🎧");
+  }
+
+  loveText.style.display = "block";
+
+  audio.onended = () => {
+    finished = true;
+    loveText.style.display = "none";
+    box.style.display = "block";
+  };
+};
+
+/* BOX CLICK */
+box.onclick = () => {
+  if (!finished) return;
+
+  box.style.display = "none";
+
+  for (let i = 0; i < 220; i++) {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = Math.random() * window.innerHeight + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 3000);
+  }
+};
+</script>
+
+</body>
+</html>
